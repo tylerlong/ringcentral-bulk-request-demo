@@ -31,6 +31,20 @@ const main = async () => {
   );
   debugExt.enabled = false;
 
+  const r3 = await rc.restapi().account().extension().addressBook().contact().list();
+  console.log(JSON.stringify(r3.records?.map((r) => r.id), null, 2));
+
+  debugExt.enabled = true;
+  await rc.put(
+    '/restapi/v1.0/account/~/extension/~/address-book/contact/*',
+    r3.records!.slice(0, 2).map((r) => ({ resourceId: r.id, body: { jobTitle: 'Teacher' } })),
+    undefined,
+    {
+      headers: { 'Content-Type': 'application/vnd.ringcentral.multipart+json' },
+    },
+  );
+  debugExt.enabled = false;
+
   await rc.revoke();
 };
 main();
